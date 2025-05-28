@@ -1,10 +1,11 @@
-import { Button } from "@/components/ui/button";
-
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+import { MessageSquare } from "lucide-react";
 export default function Home() {
   return (
-    <main className="h-screen flex flex-col justify-center items-center space-y-12 bg-zinc-900 text-white">
+    <main className="h-screen flex flex-col justify-center items-center space-y-12">
       <div className="flex flex-col gap-3 items-center text-center">
-        <h1 className="text-6xl font-bold bg-gradient-to-br from-blue-600 to-green-300 bg-clip-text text-transparent">
+        <h1 className="text-6xl font-bold bg-gradient-to-br text-blue-600 dark:from-blue-600 dark:to-green-300 dark:bg-clip-text dark:text-transparent">
           WELCOME TO DEEPTOK
         </h1>
         <p>
@@ -12,8 +13,16 @@ export default function Home() {
           Deeptok
         </p>
       </div>
-
-      <Button size="lg">Chat Now</Button>
+      <Link
+        href="/chat"
+        className={buttonVariants({
+          variant: "default",
+          size: "lg",
+        })}
+      >
+        <MessageSquare />
+        Chat Now
+      </Link>
     </main>
   );
 }
