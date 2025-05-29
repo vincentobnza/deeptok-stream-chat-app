@@ -1,7 +1,20 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
+/* STREAM CHAT STYLES */
+
+@import "stream-chat-react/dist/css/v2/index.css";
 
 @custom-variant dark (&:is(.dark *));
+
+.str-chat * {
+  font-family: "Outfit", sans-serif !important;
+}
+
+* {
+  font-family: "Outfit", sans-serif;
+}
 
 @theme inline {
   --color-background: var(--background);
