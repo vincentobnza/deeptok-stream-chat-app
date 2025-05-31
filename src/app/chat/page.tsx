@@ -1,22 +1,33 @@
 "use client";
 
-import {
-  Channel,
-  ChannelHeader,
-  ChannelList,
-  Chat,
-  MessageInput,
-  MessageList,
-  Thread,
-  Window,
-} from "stream-chat-react";
 import useInitializeChatClient from "./useInitializeChatClient";
 import { useUser } from "@clerk/nextjs";
-import MenuBar from "./MenuBar";
+import ChatSidebar from "./ChatSidebar";
+import ChatChannel from "./ChatChannel";
+import { Chat } from "stream-chat-react";
+import { Menu, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import useWindowSize from "@/hooks/useWindowSize";
 
 export default function ChatPage() {
   const { chatClient } = useInitializeChatClient();
   const { user } = useUser();
+  const [chatSidebarOpen, setChatSidebarOpen] = useState(false);
+  const windowSize = useWindowSize();
+
+  const isLargeScreen = windowSize.width >= 768;
+
+  useEffect(() => {
+    if (windowSize.width >= 768) {
+      setChatSidebarOpen(true);
+    }
+  }, [windowSize.width]);
+
+  const handleSidebarOnClose = useCallback(() => {
+    if (!isLargeScreen) {
+      setChatSidebarOpen(false);
+    }
+  }, [isLargeScreen]);
 
   if (!chatClient || !user) {
     return (
@@ -25,33 +36,36 @@ export default function ChatPage() {
       </div>
     );
   }
+
   return (
-    <div className="h-screen w-full">
-      <Chat client={chatClient}>
-        <div className="flex flex-row h-full">
-          <div className="w-full max-w-[360px]">
-            <MenuBar />
-            <ChannelList
-              filters={{
-                type: "messaging",
-                members: { $in: [user.id] },
-              }}
-              sort={{ last_message_at: -1 }}
-              options={{ state: true, presence: true, limit: 10 }}
+    <div className="h-screen bg-zinc-50 xl:px-20 xl:py-8">
+      <div className="h-full max-w-[1600px] min-w-[350px] rounded-lg shadow-sm">
+        <Chat client={chatClient}>
+          <div className="flex justify-center border-b border-zinc-100 p-3 md:hidden">
+            <button onClick={() => setChatSidebarOpen(!chatSidebarOpen)}>
+              {!chatSidebarOpen ? (
+                <span className="flex items-center gap-1">
+                  <Menu />
+                  Menu
+                </span>
+              ) : (
+                <X />
+              )}
+            </button>
+          </div>
+          <div className="flex h-full flex-row">
+            <ChatSidebar
+              user={user}
+              show={isLargeScreen || chatSidebarOpen}
+              onClose={handleSidebarOnClose}
+            />
+            <ChatChannel
+              show={isLargeScreen || !chatSidebarOpen}
+              hideChannelOnThread={!isLargeScreen && !chatSidebarOpen}
             />
           </div>
-          <div className="w-full h-">
-            <Channel>
-              <Window>
-                <ChannelHeader />
-                <MessageList />
-                <MessageInput />
-              </Window>
-              <Thread />
-            </Channel>
-          </div>
-        </div>
-      </Chat>
+        </Chat>
+      </div>
     </div>
   );
 }

@@ -3,10 +3,10 @@ import { UsersRound } from "lucide-react";
 
 export default function MenuBar() {
   return (
-    <div className="p-3 flex items-center justify-between bg-gray-100 border-b border-gray-300">
+    <div className="bg-zinc-150 flex items-center justify-between border border-zinc-100 border-r-zinc-100 border-b-zinc-300 bg-white p-3">
       <UserButton />
       <div>
-        <UsersRound />
+        <UsersRound size={18} />
       </div>
     </div>
   );
